@@ -78,7 +78,10 @@ bool IR_value_check(int a[], int b[]){
 
 void loop()
 {
-  delay(100);
+  read_sensor_values();
+}
+
+void read_sensor_values(){
   sensor[0] = digitalRead(sensor1);   //  analogRead digitalRead
   sensor[1] = digitalRead(sensor2);
   sensor[2] = digitalRead(sensor3);
@@ -137,4 +140,5 @@ void loop()
   Serial.print("\t");
   Serial.print(error);
   Serial.print("\n");
+  
 }
