@@ -9,6 +9,7 @@
 
 // Initial Values of Sensors
 int sensor[8] = { 0, 0, 0, 0, 0, 0 , 0, 0 };
+int size_of_array = 8;
 int B = 0, R = 0, L = 0, F = 0;
 char path[10];
 int i = 0, j = 0;
@@ -66,6 +67,15 @@ void setup() {
 }
 /***************************************************************************************  Void Loop  **************************************************************************************/
 
+bool IR_value_check(int a[], int b[]){
+  for (int i = 1;  i < size_of_array-1; i++){
+    if( a[i] != b[i]){
+      return false;
+    }
+  }
+  return true;
+}
+
 void loop()
 {
   delay(100);
@@ -77,6 +87,36 @@ void loop()
   sensor[5] = digitalRead(sensor6);
   sensor[6] = digitalRead(sensor7);
   sensor[7] = digitalRead(sensor8);
+
+  int white[8] = {0,0,0,0,0,0,0,0};
+  int black[8] = {0,1,1,1,1,1,1,0};
+  int err5[8] = {0,1,0,0,0,0,0,0};
+  int err4[8] = {0,1,1,0,0,0,0,0};
+  int err3[8] = {0,0,1,0,0,0,0,0};
+  int err2[8] = {0,0,1,1,0,0,0,0};
+  int err1[8] = {0,0,0,1,0,0,0,0};
+  int err0[8] = {0,0,0,1,1,0,0,0};
+  int err_1[8] = {0,0,0,0,1,0,0,0};
+  int err_2[8] = {0,0,0,0,1,1,0,0};
+  int err_3[8] = {0,0,0,0,0,1,0,0};
+  int err_4[8] = {0,0,0,0,0,1,1,0};
+  int err_5[8] = {0,0,0,0,0,0,1,0};
+  if      (sensor[0] == 1) error = 100; // found left
+  else if (sensor[7] == 1) error = 101;  // found right
+  else if (IR_value_check(sensor, white)){error = 102;}//found white
+  else if (IR_value_check(sensor, black)){error = 103;}//found Black
+  else if (IR_value_check(sensor, err5)){error = 5;}
+  else if (IR_value_check(sensor, err4)){error = 4;}
+  else if (IR_value_check(sensor, err3)){error = 3;}
+  else if (IR_value_check(sensor, err2)){error = 2;}
+  else if (IR_value_check(sensor, err1)){error = 1;}
+  else if (IR_value_check(sensor, err0)){error = 0;} 
+  else if (IR_value_check(sensor, err_1)){error = -1;} 
+  else if (IR_value_check(sensor, err_2)){error = -2;} 
+  else if (IR_value_check(sensor, err_3)){error = -3;} 
+  else if (IR_value_check(sensor, err_4)){error = -4;} 
+  else if (IR_value_check(sensor, err_5)){error = -5;}
+  else {error = 0;}
 
 
   Serial.print(sensor[0]);
@@ -94,6 +134,7 @@ void loop()
   Serial.print(sensor[6]);
   Serial.print("\t");
   Serial.print(sensor[7]);
+  Serial.print("\t");
+  Serial.print(error);
   Serial.print("\n");
 }
-/***************************************************************************************  Calculate PID  **************************************************************************************/
