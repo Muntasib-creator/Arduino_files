@@ -49,6 +49,6 @@ void motor_forward_test() {
 void forward() {
   digitalWrite(motorInput1, HIGH);
   digitalWrite(motorInput2, LOW);//Right forward rotation
-  digitalWrite(motorInput3, LOW);
-  digitalWrite(motorInput4, HIGH);//Left forward rotation
+  digitalWrite(motorInput3, HIGH);
+  digitalWrite(motorInput4, LOW);//Left forward rotation
 }
