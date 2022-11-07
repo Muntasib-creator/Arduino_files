@@ -89,7 +89,6 @@ void setup() {
 void loop()
 {
   read_sensor_values();
-  int ll =  main();
   //  stop_bot();
   //  delay(5000);
   //  Go_right_way();
@@ -341,105 +340,8 @@ void Go_right_way() {
 /***************************************************************************************  Read Sensor Values  **************************************************************************************/
 
 void read_sensor_values() {
-  //IR reading..........
-
-  sensor[0] = digitalRead(sensor1);   //  analogRead digitalRead
-  sensor[1] = digitalRead(sensor2);
-  sensor[2] = digitalRead(sensor3);
-  sensor[3] = digitalRead(sensor4);
-  sensor[4] = digitalRead(sensor5);
-  sensor[5] = digitalRead(sensor6);
-  sensor[6] = digitalRead(sensor7);
-  sensor[7] = digitalRead(sensor8);
-
-  //  Serial.print("left_dist=");
-  //  Serial.print("");
-  //  Serial.print(left_dist);
-  //  Serial.print("\t");
-  //  Serial.print("right_dist=");
-  //  Serial.print("");
-  //  Serial.print(right_dist);
-  //  Serial.print("\n\n");
-
-  Serial.print(sensor[0]);
-  Serial.print("\t");
-  Serial.print(sensor[1]);
-  Serial.print("\t");
-  Serial.print(sensor[2]);
-  Serial.print("\t");
-  Serial.print(sensor[3]);
-  Serial.print("\t");
-  Serial.print(sensor[4]);
-  Serial.print("\t");
-  Serial.print(sensor[5]);
-  Serial.print("\t");
-  Serial.print(sensor[6]);
-  Serial.print("\t");
-  Serial.print(sensor[7]);
-  Serial.print("\n");
-
-  //  if ((sensor[0] == 1))
-  //    error = 100;              // found left
-  //  else if ((sensor[7] == 1))
-  //    error = 101;              // found right
-  //  else if ((sensor[1] == 0) && (sensor[2] == 0) && (sensor[3] == 0) && (sensor[4] == 0) && (sensor[5] == 0) && (sensor[6] == 0)) // Make U turn
-  //    error = 102;              //found white
-  //  if ((sensor[1] == 1) && (sensor[2] == 1) && (sensor[3] == 1) && (sensor[4] == 1) && (sensor[5] == 1) && (sensor[6] == 1)) // stop
-  //    error = 103;              // found black
-  //  else if ((sensor[1] == 1) && (sensor[2] == 0) && (sensor[3] == 0) && (sensor[4] == 0) && (sensor[5] == 0) && (sensor[6] == 0))
-  //    error = 5;
-  //  else if ((sensor[1] == 1) && (sensor[2] == 1) && (sensor[3] == 0) && (sensor[4] == 0) && (sensor[5] == 0) && (sensor[6] == 0))
-  //    error = 4;
-  //  else if ((sensor[1] == 0) && (sensor[2] == 1) && (sensor[3] == 0) && (sensor[4] == 0) && (sensor[5] == 0) && (sensor[6] == 0))
-  //    error = 3;
-  //  else if ((sensor[1] == 0) && (sensor[2] == 1) && (sensor[3] == 1) && (sensor[4] == 0) && (sensor[5] == 0) && (sensor[6] == 0))
-  //    error = 2;
-  //  else if ((sensor[1] == 0) && (sensor[2] == 0) && (sensor[3] == 1) && (sensor[4] == 0) && (sensor[5] == 0) && (sensor[6] == 0))
-  //    error = 1;
-  //  else if ((sensor[1] == 0) && (sensor[2] == 0) && (sensor[3] == 1) && (sensor[4] == 1) && (sensor[5] == 0) && (sensor[6] == 0))
-  //    error = 0;
-  //  else if ((sensor[1] == 0) && (sensor[2] == 0) && (sensor[3] == 0) && (sensor[4] == 1) && (sensor[5] == 0) && (sensor[6] == 0))
-  //    error = -1;
-  //  else if ((sensor[1] == 0) && (sensor[2] == 0) && (sensor[3] == 0) && (sensor[4] == 1) && (sensor[5] == 1) && (sensor[6] == 0))
-  //    error = -2;
-  //  else if ((sensor[1] == 0) && (sensor[2] == 0) && (sensor[3] == 0) && (sensor[4] == 0) && (sensor[5] == 1) && (sensor[6] == 0))
-  //    error = -3;
-  //  else if ((sensor[1] == 0) && (sensor[2] == 0) && (sensor[3] == 0) && (sensor[4] == 0) && (sensor[5] == 1) && (sensor[6] == 1))
-  //    error = -4;
-  //  else if ((sensor[1] == 0) && (sensor[2] == 0) && (sensor[3] == 0) && (sensor[4] == 0) && (sensor[5] == 0) && (sensor[6] == 1))
-  //    error = -5;
-  /****************************************  Black Surface  *************************************************/
-  if ((sensor[1] == 0) && (sensor[2] == 0) && (sensor[3] == 0) && (sensor[4] == 0) && (sensor[5] == 0) && (sensor[6] == 0)) // stop
-    error = 103;              // found black
-  else  if ((sensor[0] == 0))
-    error = 100;              // found left
-  else if ((sensor[7] == 0))
-    error = 101;              // found right
-  else if ((sensor[1] == 1) && (sensor[2] == 1) && (sensor[3] == 1) && (sensor[4] == 1) && (sensor[5] == 1) && (sensor[6] == 1)) // Make U turn
-    error = 102;              //found white
-  else if ((sensor[1] == 0) && (sensor[2] == 1) && (sensor[3] == 1) && (sensor[4] == 1) && (sensor[5] == 1) && (sensor[6] == 1))
-    error = 5;
-  else if ((sensor[1] == 0) && (sensor[2] == 0) && (sensor[3] == 1) && (sensor[4] == 1) && (sensor[5] == 1) && (sensor[6] == 1))
-    error = 4;
-  else if ((sensor[1] == 1) && (sensor[2] == 0) && (sensor[3] == 1) && (sensor[4] == 1) && (sensor[5] == 1) && (sensor[6] == 1))
-    error = 3;
-  else if ((sensor[1] == 1) && (sensor[2] == 0) && (sensor[3] == 0) && (sensor[4] == 1) && (sensor[5] == 1) && (sensor[6] == 1))
-    error = 2;
-  else if ((sensor[1] == 1) && (sensor[2] == 1) && (sensor[3] == 0) && (sensor[4] == 1) && (sensor[5] == 1) && (sensor[6] == 1))
-    error = 1;
-  else if ((sensor[1] == 1) && (sensor[2] == 1) && (sensor[3] == 0) && (sensor[4] == 0) && (sensor[5] == 1) && (sensor[6] == 1))
-    error = 1;
-  else if ((sensor[1] == 1) && (sensor[2] == 1) && (sensor[3] == 1) && (sensor[4] == 0) && (sensor[5] == 1) && (sensor[6] == 1))
-    error = -1;
-  else if ((sensor[1] == 1) && (sensor[2] == 1) && (sensor[3] == 1) && (sensor[4] == 0) && (sensor[5] == 0) && (sensor[6] == 1))
-    error = -2;
-  else if ((sensor[1] == 1) && (sensor[2] == 1) && (sensor[3] == 1) && (sensor[4] == 1) && (sensor[5] == 0) && (sensor[6] == 1))
-    error = -3;
-  else if ((sensor[1] == 1) && (sensor[2] == 1) && (sensor[3] == 1) && (sensor[4] == 1) && (sensor[5] == 0) && (sensor[6] == 0))
-    error = -4;
-  else if ((sensor[1] == 1) && (sensor[2] == 1) && (sensor[3] == 1) && (sensor[4] == 1) && (sensor[5] == 1) && (sensor[6] == 0))
-    error = -5;
-
+  Serial.println(3011);
+  
 }
 /***************************************************************************************  Calculate PID  **************************************************************************************/
 
