@@ -15,10 +15,10 @@ char path[50];
 int i = 0, j = 0;
 // Motor Pins
 #define ENA 6
-#define right_reverse_rotation 7
-#define right_forward_rotation 8
-#define left_reverse_rotation 9
-#define left_forward_rotation 10
+#define right_forward 7
+#define right_reverse 8
+#define left_forward 9
+#define left_reverse 10
 #define ENB 11
 
 int left_motor_speed = 0;
@@ -69,10 +69,10 @@ void setup() {
   pinMode(sensor7, INPUT);
   pinMode(sensor8, INPUT);
 
-  pinMode(right_reverse_rotation, OUTPUT);
-  pinMode(right_forward_rotation, OUTPUT);
-  pinMode(left_reverse_rotation, OUTPUT);
-  pinMode(left_forward_rotation, OUTPUT);
+  pinMode(right_forward, OUTPUT);
+  pinMode(right_reverse, OUTPUT);
+  pinMode(left_forward, OUTPUT);
+  pinMode(left_reverse, OUTPUT);
   pinMode(ENA, OUTPUT);
   pinMode(ENB, OUTPUT);
 
@@ -389,39 +389,39 @@ void motor_control() {
   forward();
 }
 void motor_forward_test() {
-  analogWrite(ENA, 80); //Left Motor Speed
-  analogWrite(ENB, 80); //Right Motor Speed
+  analogWrite(ENA, 80);
+  analogWrite(ENB, 80);
   forward();
 }
 
 void forward() {
-  digitalWrite(right_reverse_rotation, HIGH);
-  digitalWrite(right_forward_rotation, LOW);//Right forward rotation
-  digitalWrite(left_reverse_rotation, HIGH);
-  digitalWrite(left_forward_rotation, LOW);//Left forward rotation
+  digitalWrite(right_forward, HIGH);
+  digitalWrite(right_reverse, LOW);
+  digitalWrite(left_forward, HIGH);
+  digitalWrite(left_reverse, LOW);
 }
 void reverse() {
-  digitalWrite(right_reverse_rotation, LOW);
-  digitalWrite(right_forward_rotation, HIGH);
-  digitalWrite(left_reverse_rotation, LOW);
-  digitalWrite(left_forward_rotation, HIGH);
-}
-void sharpRightTurn() {
-  digitalWrite(right_reverse_rotation, LOW);//Right reverse rotation
-  digitalWrite(right_forward_rotation, HIGH);
-  digitalWrite(left_reverse_rotation, HIGH);
-  digitalWrite(left_forward_rotation, LOW);//Left forward rotation
+  digitalWrite(right_forward, LOW);
+  digitalWrite(right_reverse, HIGH);
+  digitalWrite(left_forward, LOW);
+  digitalWrite(left_reverse, HIGH);
 }
 void sharpLeftTurn() {
-  digitalWrite(right_reverse_rotation, HIGH);
-  digitalWrite(right_forward_rotation, LOW);//Right forward rotation
-  digitalWrite(left_reverse_rotation, LOW);//Left reverse rotation
-  digitalWrite(left_forward_rotation, HIGH);
+  digitalWrite(right_forward, LOW);
+  digitalWrite(right_reverse, HIGH);
+  digitalWrite(left_forward, HIGH);
+  digitalWrite(left_reverse, LOW);
+}
+void sharpRightTurn() {
+  digitalWrite(right_forward, HIGH);
+  digitalWrite(right_reverse, LOW);
+  digitalWrite(left_forward, LOW);
+  digitalWrite(left_reverse, HIGH);
 }
 void stop_bot() {
   //All motors at ease
-  digitalWrite(right_reverse_rotation, LOW);
-  digitalWrite(right_forward_rotation, LOW);
-  digitalWrite(left_reverse_rotation, LOW);
-  digitalWrite(left_forward_rotation, LOW);
+  digitalWrite(right_forward, LOW);
+  digitalWrite(right_reverse, LOW);
+  digitalWrite(left_forward, LOW);
+  digitalWrite(left_reverse, LOW);
 }

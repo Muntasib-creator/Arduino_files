@@ -1,8 +1,8 @@
 #define ENA 6
-#define motorInput1 7
-#define motorInput2 8
-#define motorInput3 9
-#define motorInput4 10
+#define right_forward 7
+#define right_reverse 8
+#define left_forward 9
+#define left_reverse 10
 #define ENB 11
 
 #define sensor1 A3      // Left most sensor
@@ -16,10 +16,10 @@
 
 void setup() {
 
-  pinMode(motorInput1, OUTPUT);
-  pinMode(motorInput2, OUTPUT);
-  pinMode(motorInput3, OUTPUT);
-  pinMode(motorInput4, OUTPUT);
+  pinMode(right_forward, OUTPUT);
+  pinMode(right_reverse, OUTPUT);
+  pinMode(left_forward, OUTPUT);
+  pinMode(left_reverse, OUTPUT);
   pinMode(ENA, OUTPUT);
   pinMode(ENB, OUTPUT);
 
@@ -43,12 +43,39 @@ void loop() {
 void motor_forward_test() {
   analogWrite(ENA, 80); //Left Motor Speed
   analogWrite(ENB, 80); //Right Motor Speed
-  forward();
+  // forward();
+  sharpRightTurn();
 }
 
+
 void forward() {
-  digitalWrite(motorInput1, HIGH);
-  digitalWrite(motorInput2, LOW);//Right forward rotation
-  digitalWrite(motorInput3, HIGH);
-  digitalWrite(motorInput4, LOW);//Left forward rotation
+  digitalWrite(right_forward, HIGH);
+  digitalWrite(right_reverse, LOW);
+  digitalWrite(left_forward, HIGH);
+  digitalWrite(left_reverse, LOW);
+}
+void reverse() {
+  digitalWrite(right_forward, LOW);
+  digitalWrite(right_reverse, HIGH);
+  digitalWrite(left_forward, LOW);
+  digitalWrite(left_reverse, HIGH);
+}
+void sharpLeftTurn() {
+  digitalWrite(right_forward, LOW);
+  digitalWrite(right_reverse, HIGH);
+  digitalWrite(left_forward, HIGH);
+  digitalWrite(left_reverse, LOW);
+}
+void sharpRightTurn() {
+  digitalWrite(right_forward, HIGH);
+  digitalWrite(right_reverse, LOW);
+  digitalWrite(left_forward, LOW);
+  digitalWrite(left_reverse, HIGH);
+}
+void stop_bot() {
+  //All motors at ease
+  digitalWrite(right_forward, LOW);
+  digitalWrite(right_reverse, LOW);
+  digitalWrite(left_forward, LOW);
+  digitalWrite(left_reverse, LOW);
 }
