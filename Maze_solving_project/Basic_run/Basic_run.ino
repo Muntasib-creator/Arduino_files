@@ -289,9 +289,8 @@ void loop(){
 
 bool IR_value_check(int a[], int b[]){
   for (int i = 1;  i < size_of_array-1; i++){
-    if( a[i] != b[i]){
-      return false;
-    }
+    if(a[i] == 2 || b[i] == 2) continue;
+    if(a[i] != b[i]) return false;
   }
   return true;
 }
@@ -309,18 +308,18 @@ void read_sensor_values() {
   sensor[7] = digitalRead(sensor8);
 
   int white[8] = {0,0,0,0,0,0,0,0};
-  int black[8] = {0,1,1,1,1,1,1,0};
-  int err5[8] = {0,1,0,0,0,0,0,0};
-  int err4[8] = {0,1,1,0,0,0,0,0};
-  int err3[8] = {0,0,1,0,0,0,0,0};
-  int err2[8] = {0,0,1,1,0,0,0,0};
-  int err1[8] = {0,0,0,1,0,0,0,0};
-  int err0[8] = {0,0,0,1,1,0,0,0};
-  int err_1[8] = {0,0,0,0,1,0,0,0};
-  int err_2[8] = {0,0,0,0,1,1,0,0};
-  int err_3[8] = {0,0,0,0,0,1,0,0};
-  int err_4[8] = {0,0,0,0,0,1,1,0};
-  int err_5[8] = {0,0,0,0,0,0,1,0};
+  int black[8] = {2,1,1,1,1,1,1,2};
+  int err5[8] = {2,1,0,0,0,0,0,2};
+  int err4[8] = {2,1,1,0,0,0,0,2};
+  int err3[8] = {2,0,1,0,0,0,0,2};
+  int err2[8] = {2,0,1,1,0,0,0,2};
+  int err1[8] = {2,0,0,1,0,0,0,2};
+  int err0[8] = {2,0,0,1,1,0,0,2};
+  int err_1[8] = {2,0,0,0,1,0,0,2};
+  int err_2[8] = {2,0,0,1,1,0,0,2};
+  int err_3[8] = {2,0,0,0,0,1,0,2};
+  int err_4[8] = {2,0,0,0,0,1,1,2};
+  int err_5[8] = {2,0,0,0,0,0,1,2};
   if      (sensor[0] == 1) error = 100; // found left
   else if (sensor[7] == 1) error = 101;  // found right
   else if (IR_value_check(sensor, white)){error = 102;}//found white
