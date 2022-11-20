@@ -8,7 +8,7 @@
 #define sensor8 5
 
 // Initial Values of Sensors
-int sensor[8] = { 0, 0, 0, 0, 0, 0 , 0, 0 };
+int sensor[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 int size_of_array = 8;
 int B = 0, R = 0, L = 0, F = 0;
 char path[50];
@@ -36,7 +36,7 @@ int DelayEvery = 70;
 int DelayReverse = DelayForth*2;
 int DelaySharp = DelayForth*2;
 int delaytest = 3000;
-int DelayWhiteError = 50;
+int DelayWhiteError = 30;
 int GoodPosition = 3;
 
 int t = 0;
@@ -129,7 +129,14 @@ void loop(){
         read_sensor_values();
       } while (error < -GoodPosition || error > GoodPosition);
     }
-    else {  // Todo: implement while loop
+    else {  
+      while(true){
+        analogWrite(ENA, spedr); //Right Motor Speed
+        analogWrite(ENB, spedl); //Left Motor Speed
+        sharpLeftTurn();
+        read_sensor_values();
+        if (sensor[7]==1||sensor[6]==1)break;
+      }
       analogWrite(ENA, spedr); //Right Motor Speed
       analogWrite(ENB, spedl); //Left Motor Speed
       sharpLeftTurn();
@@ -155,8 +162,8 @@ void loop(){
   /*****************  SHARP_RIGHT_DETECT  ***************/
 
   else if (error == 101) {          // Make right turn untill it detects 
-       stop_bot();
-       delay(delaytest);
+      //  stop_bot();
+      //  delay(delaytest);
     Time = 0;
     do {
       forward();
@@ -170,8 +177,8 @@ void loop(){
     Time = 0;
     read_sensor_values();
     if (error == 102) {
-      stop_bot();
-      delay(6000);
+      // stop_bot();
+      // delay(6000);
       path[i++] = 'R';
       do {
         analogWrite(ENA, spedr); //Right Motor Speed
@@ -204,7 +211,6 @@ void loop(){
     Time = 0;
     do {
       forward();
-      delay(1);
       Time++;
       read_sensor_values();
       if (error != 102) {
@@ -218,7 +224,6 @@ void loop(){
       sharpRightTurn();
       read_sensor_values();
     } while (error < -GoodPosition || error > GoodPosition);
-    // return 0;
   }
 
   /********************* BLACK_DETECT  ***********************/
