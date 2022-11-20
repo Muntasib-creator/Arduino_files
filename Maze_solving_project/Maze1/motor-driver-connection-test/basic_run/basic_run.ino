@@ -42,12 +42,12 @@ int size_of_array = 8;
 int left_motor_speed = 0;
 int right_motor_speed = 0;
 int initial_motor_speed = 60;
-int sharp_turn_speed = 80;
-int default_speed = 80;
+int sharp_turn_speed = 70;
+int default_speed = initial_motor_speed;
 // PID Constants
-float Kp = 20.00;
+float Kp = 3.00;
 float Ki = 0;
-float Kd = 40.00;
+float Kd = 10.00;
 
 // PID Variables
 float error = 0, P = 0, I = 0, D = 0, PID_value = 0;
@@ -224,21 +224,21 @@ void handleSpecialErrors(){
     do{
       read_ir_sensor_values();
       sharp_left_turn();
-    }while(error < right_deflection_1 || error > left_deflection_1);
+    }while(error < right_deflection_2 || error > left_deflection_2);
     return ;
   }
   if(error==sharp_right_found){
     do{
       read_ir_sensor_values();
       sharp_right_turn();
-    }while(error < right_deflection_1 || error > left_deflection_1);
+    }while(error < right_deflection_2 || error > left_deflection_2);
     return ;
   }
   if(error==all_white_found){
     do{
       read_ir_sensor_values();
       sharp_left_turn();
-    }while(error < right_deflection_1 || error > left_deflection_1);
+    }while(error < right_deflection_2 || error > left_deflection_2);
     return ;
   }
   stop_bot();
