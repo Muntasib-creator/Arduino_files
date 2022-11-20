@@ -42,10 +42,10 @@ int size_of_array = 8;
 int left_motor_speed = 0;
 int right_motor_speed = 0;
 int initial_motor_speed = 60;
-int sharp_turn_speed = 70;
+int sharp_turn_speed = 60;
 int default_speed = initial_motor_speed;
 // PID Constants
-float Kp = 3.00;
+float Kp = 8.00;
 float Ki = 0;
 float Kd = 10.00;
 
@@ -246,7 +246,7 @@ void handleSpecialErrors(){
 
 void calculate_pid() {
   if (error > 10){
-    handleSpecialErrors();
+    // handleSpecialErrors();
     return;
   }
   Serial.print(" Error : ");
