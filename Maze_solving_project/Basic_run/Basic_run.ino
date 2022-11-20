@@ -49,7 +49,7 @@ int initial_motor_speed = 60;
 //int ledPin2 = A4;
 
 // PID Constants
-float Kp = 10.00; // Will be tuned on track
+float Kp = 8.00; // Will be tuned on track
 float Ki = 0; //these contants will differ in eee and
 float Kd = 10.00 ;//cse fest depending on track
 
@@ -113,10 +113,10 @@ void loop(){
       forward();
       delay(1);
       Time++;
-      read_sensor_values();
-      if (error == 103) {
-        goto Black;
-      }
+      // read_sensor_values();
+      // if (error == 103) {
+      //   goto Black;
+      // }
     } while (Time <= DelayForth);
     Time = 0;
     read_sensor_values();
@@ -129,7 +129,7 @@ void loop(){
         read_sensor_values();
       } while (error < -GoodPosition || error > GoodPosition);
     }
-    else {
+    else {  // Todo: implement while loop
       analogWrite(ENA, spedr); //Right Motor Speed
       analogWrite(ENB, spedl); //Left Motor Speed
       sharpLeftTurn();
@@ -155,21 +155,23 @@ void loop(){
   /*****************  SHARP_RIGHT_DETECT  ***************/
 
   else if (error == 101) {          // Make right turn untill it detects 
-    //    stop_bot();
-    //    delay(delaytest);
+       stop_bot();
+       delay(delaytest);
     Time = 0;
     do {
       forward();
       delay(1);
       Time++;
-      read_sensor_values();
-      if (error == 103) {
-        goto Black;
-      }
+      // read_sensor_values();
+      // if (error == 103) {
+      //   goto Black;
+      // }
     } while (Time <= DelayForth);
     Time = 0;
     read_sensor_values();
     if (error == 102) {
+      stop_bot();
+      delay(6000);
       path[i++] = 'R';
       do {
         analogWrite(ENA, spedr); //Right Motor Speed
