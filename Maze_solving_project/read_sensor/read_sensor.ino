@@ -58,6 +58,11 @@ float error = 0, P = 0, I = 0, D = 0, PID_value = 0;
 float previous_error = 0, previous_I = 0;
 
 int flag = 0;
+#include <NewPing.h>
+
+NewPing sonar_left(A4,12,30);
+NewPing sonar_front(A4,A5,30);
+NewPing sonar_right(A4,A7,30);
 /***************************************************************************************  Void Setup  **************************************************************************************/
 void setup() {
   Serial.begin(9600);                     //setting serial monitor at a default baund rate of 9600
@@ -139,6 +144,14 @@ void read_sensor_values(){
   Serial.print(sensor[7]);
   Serial.print("\t");
   Serial.print(error);
-  Serial.print("\n");
+  Serial.print("\t");
+  Serial.print("left: ");
+  Serial.print(sonar_left.ping_cm());
+  Serial.print("\t");
+  Serial.print("front: ");
+  Serial.print(sonar_front.ping_cm());
+  Serial.print("\t");
+  Serial.print("right: ");
+  Serial.println(sonar_right.ping_cm());
   
 }
