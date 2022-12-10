@@ -1,18 +1,18 @@
-#define sensor1 A3      // Left most sensor
-#define sensor2 A2      // Left sensor
-#define sensor3 A1      // Middle Left sensor
-#define sensor4 A0      // Middle Right sensor
-#define sensor5 2       // Right sensor
-#define sensor6 3       // Right most sensor
-#define sensor7 4
-#define sensor8 5
+#define sensor1 A0      // Left most sensor
+#define sensor2 A1      // Left sensor
+#define sensor3 A2      // Middle Left sensor
+#define sensor4 A3      // Middle Right sensor
+#define sensor5 5       // Right sensor
+#define sensor6 4       // Right most sensor
+#define sensor7 3
+#define sensor8 2
 
 // Initial Values of Sensors
-int sensor[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-int size_of_array = 8;
-int B = 0, R = 0, L = 0, F = 0;
-char path[50];
-int i = 0, j = 0;
+unsigned short sensor[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+unsigned short size_of_array = 8;
+unsigned short B = 0, R = 0, L = 0, F = 0;
+char path[20];
+unsigned short  i = 0, j = 0;
 // Motor Pins
 #define ENA 6
 #define right_forward 7
@@ -24,41 +24,56 @@ int i = 0, j = 0;
 int left_motor_speed = 0;
 int right_motor_speed = 0;
 
-int spedr = 60;
-int spedl = 60;
-int spedf = 60;
+unsigned short spedr = 60;
+unsigned short spedl = 60;
+unsigned short spedf = 60;
 
 
-int DelayCheck = 16;
+unsigned short DelayCheck = 16;
 
-int DelayForth = 70;
-int DelayEvery = 70;
-int DelayReverse = DelayForth*2;
-int DelaySharp = DelayForth*2;
-int delaytest = 3000;
-int DelayWhiteError = 30;
-int GoodPosition = 3;
+unsigned short DelayForth = 70;
+unsigned short DelayEvery = 70;
+unsigned short DelayReverse = DelayForth*2;
+unsigned short DelaySharp = DelayForth*2;
+unsigned short delaytest = 3000;
+unsigned short DelayWhiteError = 30;
+unsigned short GoodPosition = 3;
 
-int t = 0;
-int Time = 0;
-
-int initial_motor_speed = 60;
+unsigned short t = 0;
+unsigned short Time = 0;
+unsigned short initial_motor_speed = 60;
 
 // Output Pins for Led
 //int ledPin1 = A3;
 //int ledPin2 = A4;
 
 // PID Constants
-float Kp = 8.00; // Will be tuned on track
-float Ki = 0; //these contants will differ in eee and
-float Kd = 10.00 ;//cse fest depending on track
+int Kp = 7; // Will be tuned on track
+int Ki = 0; //these contants will differ in eee and
+int Kd = 10 ;//cse fest depending on track
+
 
 // PID Variables
-float error = 0, P = 0, I = 0, D = 0, PID_value = 0;
-float previous_error = 0, previous_I = 0;
+int error = 0;
+int P = 0, I = 0, D = 0, PID_value = 0;
+int previous_error = 0, previous_I = 0;
 
-int flag = 0;
-/***************************************************************************************  Void Setup  **************************************************************************************/
+unsigned short flag = 0;
+
+// ERROR VARS
+unsigned short LEFT = 100;
+unsigned short RIGHT = 101;
+unsigned short WHITE = 102;
+unsigned short BLACK = 103;
+unsigned short WALL = 105;
+
+// Sonar Library
+#include <NewPing.h>
+NewPing sonar_left(A4,A5,24);
+// NewPing sonar_front(A4,A7,30);
+NewPing sonar_right(A4,12,24);
+int sLeft, sRight;
+
 void setup() {
   pinMode(sensor1, INPUT);
   pinMode(sensor2, INPUT);
@@ -79,219 +94,183 @@ void setup() {
   /*pinMode(ledPin1, OUTPUT);
     digitalWrite(ledPin1, LOW);*/
 
-
-  Serial.begin(9600);                     //setting serial monitor at a default baund rate of 9600
+  Serial.begin(9600);   //setting serial monitor at a default baund rate of 9600
   delay(500);
   Serial.println("Started !!");
-  delay(1000);
+  delay(3000);
 }
-/***************************************************************************************  Void Loop  **************************************************************************************/
 
 void read_sensor_values();
 void forward();
 void sharpLeftTurn();
 void sharpRightTurn();
 void stop_bot();
+void goSharpLeft();
+void goSharpRight();
+void goWhiteTurn();
+void goBlackTurn();
+void followWall();
 
 void loop(){
-  // motor_forward_test();
-  // read_sensor_values();
-  // int ll =  main();
-  //  stop_bot();
-  //  delay(5000);
-  //  Go_right_way();
-  //  stop_bot();
-  //  delay(5000);
-
   read_sensor_values();
-  Line_white_error:
-  /*******************  SHARP_LEFT_DETECT  *********************/
-  if (error == 100) {
-    L++;
-    Time = 0;
-    do {
-      forward();
-      delay(1);
-      Time++;
-      // read_sensor_values();
-      // if (error == 103) {
-      //   goto Black;
-      // }
-    } while (Time <= DelayForth);
-    Time = 0;
-    read_sensor_values();
-    if (error == 102) {
-      path[i++] = 'L';
-      do {
-        analogWrite(ENA, spedr); //Right Motor Speed
-        analogWrite(ENB, spedl); //Left Motor Speed
-        sharpLeftTurn();
-        read_sensor_values();
-      } while (error < -GoodPosition || error > GoodPosition);
-    }
-    else {  
-      while(true){
-        analogWrite(ENA, spedr); //Right Motor Speed
-        analogWrite(ENB, spedl); //Left Motor Speed
-        sharpLeftTurn();
-        read_sensor_values();
-        if (sensor[7]==1||sensor[6]==1)break;
-      }
-      analogWrite(ENA, spedr); //Right Motor Speed
-      analogWrite(ENB, spedl); //Left Motor Speed
-      sharpLeftTurn();
-      delay(DelaySharp);
-      //      read_sensor_values();
-      do {
-        analogWrite(ENA, spedr); //Right Motor Speed
-        analogWrite(ENB, spedl); //Left Motor Speed
-        sharpLeftTurn();
-        read_sensor_values();
-      } while (error < -GoodPosition || error > GoodPosition);
-      // int l= main();
-      // if (l == 0) {
-      //   path[i++] = 'S';
-      // }
-      // else {
-      //   path[i++] = 'L';
-      // }
-      //      stop_bot();
-    }
-  }
+  if      (error == WALL)  followWall();
+  else if (error == LEFT)  goSharpLeft();
+  else if (error == RIGHT) goSharpRight();
+  else if (error == WHITE) goWhiteTurn();
+  else if (error == BLACK) goBlackTurn();
+  else                     goPID();
+}
 
-  /*****************  SHARP_RIGHT_DETECT  ***************/
-
-  else if (error == 101) {          // Make right turn untill it detects 
-      //  stop_bot();
-      //  delay(delaytest);
-    Time = 0;
-    do {
-      forward();
-      delay(1);
-      Time++;
-      // read_sensor_values();
-      // if (error == 103) {
-      //   goto Black;
-      // }
-    } while (Time <= DelayForth);
-    Time = 0;
-    read_sensor_values();
-    if (error == 102) {
-      // stop_bot();
-      // delay(6000);
-      path[i++] = 'R';
-      do {
-        analogWrite(ENA, spedr); //Right Motor Speed
-        analogWrite(ENB, spedl); //Left Motor Speed
-        sharpRightTurn();
-        read_sensor_values();
-      } while (error < -GoodPosition || error > GoodPosition);
-    }
-
-    // else {
-      //      analogWrite(ENA, spedf); //Right Motor Speed
-      //      analogWrite(ENB, spedf); //Left Motor Speed
-      //      forward();
-      //      delay(DelayForth);
-      // int l= main();
-      // if (l == 0) {
-      //   path[i++] = 'R';
-      //   return 0;
-      // }
-      // else {
-      //   path[i++] = 'S';
-      //   return 1;
-      // }
+void goSharpLeft(){
+  // if(error != LEFT) return;
+  L++;
+  Time = 0;
+  while (Time <= DelayForth) {
+    forward();
+    delay(1);
+    Time++;
+    // read_sensor_values();
+    // if (error == BLACK) {
+    //   goto Black;
     // }
   }
-
-  /**************** WHITE_DETECT  ******************/
-
-  else if (error == 102) {
-    Time = 0;
-    do {
-      forward();
-      Time++;
-      read_sensor_values();
-      if (error != 102) {
-        goto Line_white_error;
-      }
-    } while (Time <= DelayWhiteError);
-    Time = 0;
-    do {
-      analogWrite(ENA, spedr); //Right Motor Speed
-      analogWrite(ENB, spedl); //Left Motor Speed
-      sharpRightTurn();
-      read_sensor_values();
-    } while (error < -GoodPosition || error > GoodPosition);
-  }
-
-  /********************* BLACK_DETECT  ***********************/
-
-  else if (error == 103) {
-  Black:
-    analogWrite(ENA, spedf); //Right Motor Speed
-    analogWrite(ENB, spedf); // Left Motor Speed
-    forward();
-    delay(DelayEvery);
-    read_sensor_values();
-    if (error == 103) {     /**** Finish End Reached, Stop! ****/
-      stop_bot();
-      delay(5000);
-      // return 1;
-    }
-    else if (error == 102) {       /**** Move Left ****/
-      do {
-        analogWrite(ENA, spedr); //Right Motor Speed
-        analogWrite(ENB, spedl); //Left Motor Speed
-        sharpLeftTurn();
-        read_sensor_values();
-      } while (error < -GoodPosition || error > GoodPosition );
-      // int l = main();
-      // if (l == 0) {
-      //   path[i++] = 'R';
-      //   return 0;
-      // }
-      // else {
-      //   path[i++] = 'L';
-      //   return 1;
-      // }
-    }
-    else {
+  Time = 0;
+  read_sensor_values();
+  if (error == WHITE) {
+    path[i++] = 'L';
+    while (error < -GoodPosition || error > GoodPosition) {
       analogWrite(ENA, spedr); //Right Motor Speed
       analogWrite(ENB, spedl); //Left Motor Speed
       sharpLeftTurn();
-      delay(DelaySharp);
-      // read_sensor_values();
-      do {
-        analogWrite(ENA, spedr); //Right Motor Speed
-        analogWrite(ENB, spedl); //Left Motor Speed
-        sharpLeftTurn();
-        read_sensor_values();
-      } while (error < -GoodPosition || error > GoodPosition );
-      // int l = main();
-      // if (l == 0) {
-      //   int l2=main();
-      //   if (l2 == 0) {
-      //     path[i++] = 'R';
-      //     return 0;
-      //   }
-      //   else {
-      //     path[i++] = 'S';
-      //     return 1;
-      //   }
-      // }
-      // else {
-      //   path[i++] = 'L';
-      //   return 1;
-      // }
+      read_sensor_values();
+    }
+  }
+  else {  
+    while(true){
+      analogWrite(ENA, spedr); //Right Motor Speed
+      analogWrite(ENB, spedl); //Left Motor Speed
+      sharpLeftTurn();
+      read_sensor_values();
+      if (sensor[7]==1||sensor[6]==1)break;
+    }
+    analogWrite(ENA, spedr); //Right Motor Speed
+    analogWrite(ENB, spedl); //Left Motor Speed
+    sharpLeftTurn();
+    delay(DelaySharp);
+    // read_sensor_values();
+    while (error < -GoodPosition || error > GoodPosition) {
+      analogWrite(ENA, spedr); //Right Motor Speed
+      analogWrite(ENB, spedl); //Left Motor Speed
+      sharpLeftTurn();
+      read_sensor_values();
+    }
+  }
+}
+void goSharpRight(){
+  Time = 0;
+  do {
+    forward();
+    delay(1);
+    Time++;
+    // read_sensor_values();
+    // if (error == BLACK) {
+    //   goto Black;
+    // }
+  } while (Time <= DelayForth);
+  Time = 0;
+  read_sensor_values();
+  if (error == WHITE) {
+    path[i++] = 'R';
+    while (error < -GoodPosition || error > GoodPosition) {
+      analogWrite(ENA, spedr);
+      analogWrite(ENB, spedl);
+      sharpRightTurn();
+      read_sensor_values();
     }
   }
 
-  else {
-    calculate_pid();
-    motor_control();
+}
+void goWhiteTurn(){
+  Time = 0;
+  while (Time <= DelayWhiteError) {
+    forward();
+    Time++;
+    read_sensor_values();
+    if (error != WHITE)return;
   }
+  Time = 0;
+  while (error < -GoodPosition || error > GoodPosition) {
+    Serial.print("XX=");
+    Serial.print(error);
+    Serial.print("\t");
+
+    analogWrite(ENA, spedr);
+    analogWrite(ENB, spedl);
+    sharpRightTurn();
+    read_sensor_values();
+  }
+}
+
+void goBlackTurn(){
+  analogWrite(ENA, spedf);
+  analogWrite(ENB, spedf);
+  forward();
+  delay(DelayEvery);
+  read_sensor_values();
+  if (error == BLACK) {     /**** Finish End Reached, Stop! ****/
+    stop_bot();
+    delay(5000);
+  }
+  else if (error == WHITE) {       /**** Move Left ****/
+    while (error < -GoodPosition || error > GoodPosition ) {
+      analogWrite(ENA, spedr); 
+      analogWrite(ENB, spedl);
+      sharpLeftTurn();
+      read_sensor_values();
+    }
+
+  }
+  else {
+    analogWrite(ENA, spedr);
+    analogWrite(ENB, spedl);
+    sharpLeftTurn();
+    delay(DelaySharp);
+    // read_sensor_values();
+    while (error < -GoodPosition || error > GoodPosition) {
+      analogWrite(ENA, spedr);
+      analogWrite(ENB, spedl);
+      sharpLeftTurn();
+      read_sensor_values();
+    }
+  }
+}
+
+void followWall(){
+  int pivot = 16;
+  int diff = (pivot-sLeft)/2;  // if left diff pos, if right diff neg
+  unsigned short sKp = 4;
+  // unsigned short sKd = 0;
+  // unsigned short sKi = 10;
+  left_motor_speed = initial_motor_speed-20 + diff*sKp;
+  right_motor_speed = initial_motor_speed-20 - diff*sKp;
+
+  left_motor_speed = constrain(left_motor_speed, 0, 255);
+  right_motor_speed = constrain(right_motor_speed, 0, 255);
+
+  Serial.print("diff: ");
+  Serial.print(diff);
+  Serial.print("\t");
+  Serial.print("L: ");
+  Serial.print(left_motor_speed);
+  Serial.print("\t");
+  Serial.print("R: ");
+  Serial.print(right_motor_speed);
+  Serial.print("\t");
+  
+  analogWrite(ENA, left_motor_speed);
+  analogWrite(ENB, right_motor_speed);
+  forward();
+  return;
 }
 
 bool IR_value_check(int a[], int b[]){
@@ -301,11 +280,9 @@ bool IR_value_check(int a[], int b[]){
   }
   return true;
 }
-
 void read_sensor_values() {
-  //IR reading..........
 
-  sensor[0] = digitalRead(sensor1);   //  analogRead digitalRead
+  sensor[0] = digitalRead(sensor1);
   sensor[1] = digitalRead(sensor2);
   sensor[2] = digitalRead(sensor3);
   sensor[3] = digitalRead(sensor4);
@@ -313,24 +290,28 @@ void read_sensor_values() {
   sensor[5] = digitalRead(sensor6);
   sensor[6] = digitalRead(sensor7);
   sensor[7] = digitalRead(sensor8);
+  sLeft = sonar_left.ping_cm();
+  sRight = sonar_right.ping_cm();
 
-  int white[8] = {0,0,0,0,0,0,0,0};
-  int black[8] = {2,1,1,1,1,1,1,2};
-  int err5[8] = {2,1,0,0,0,0,0,2};
-  int err4[8] = {2,1,1,0,0,0,0,2};
-  int err3[8] = {2,0,1,0,0,0,0,2};
-  int err2[8] = {2,0,1,1,0,0,0,2};
-  int err1[8] = {2,0,0,1,0,0,0,2};
-  int err0[8] = {2,0,0,1,1,0,0,2};
-  int err_1[8] = {2,0,0,0,1,0,0,2};
-  int err_2[8] = {2,0,0,1,1,0,0,2};
-  int err_3[8] = {2,0,0,0,0,1,0,2};
-  int err_4[8] = {2,0,0,0,0,1,1,2};
-  int err_5[8] = {2,0,0,0,0,0,1,2};
-  if      (sensor[0] == 1) error = 100; // found left
-  else if (sensor[7] == 1) error = 101;  // found right
-  else if (IR_value_check(sensor, white)){error = 102;}//found white
-  else if (IR_value_check(sensor, black)){error = 103;}//found Black
+  unsigned short white[8] = {0,0,0,0,0,0,0,0};
+  unsigned short black[8] = {2,1,1,1,1,1,1,2};
+  unsigned short err5[8] = {2,1,0,0,0,0,0,2};
+  unsigned short err4[8] = {2,1,1,0,0,0,0,2};
+  unsigned short err3[8] = {2,0,1,0,0,0,0,2};
+  unsigned short err2[8] = {2,0,1,1,0,0,0,2};
+  unsigned short err1[8] = {2,0,0,1,0,0,0,2};
+  unsigned short err0[8] = {2,0,0,1,1,0,0,2};
+  unsigned short err_1[8] = {2,0,0,0,1,0,0,2};
+  unsigned short err_2[8] = {2,0,0,1,1,0,0,2};
+  unsigned short err_3[8] = {2,0,0,0,0,1,0,2};
+  unsigned short err_4[8] = {2,0,0,0,0,1,1,2};
+  unsigned short err_5[8] = {2,0,0,0,0,0,1,2};
+  
+  if (sLeft != 0) error = WALL;
+  else if (sensor[0] == 1) error = LEFT; // found left
+  else if (sensor[7] == 1) error = RIGHT;  // found right
+  else if (IR_value_check(sensor, white)){error = WHITE;}//found white
+  else if (IR_value_check(sensor, black)){error = BLACK;}//found Black
   else if (IR_value_check(sensor, err5)){error = 5;}
   else if (IR_value_check(sensor, err4)){error = 4;}
   else if (IR_value_check(sensor, err3)){error = 3;}
@@ -344,6 +325,7 @@ void read_sensor_values() {
   else if (IR_value_check(sensor, err_5)){error = -5;}
   else {error = 0;}
 
+  Serial.print("\n");
   Serial.print(sensor[0]);
   Serial.print("\t");
   Serial.print(sensor[1]);
@@ -359,11 +341,19 @@ void read_sensor_values() {
   Serial.print(sensor[6]);
   Serial.print("\t");
   Serial.print(sensor[7]);
-  Serial.print("\n");
+  Serial.print("\t");
+  Serial.print(error);
+  Serial.print("\t");
+  Serial.print("left: ");
+  Serial.print(sLeft);
+  Serial.print("\t");
+  Serial.print("right: ");
+  Serial.print(sRight);
+  Serial.print("\t");
 
 }
 
-void calculate_pid() {
+void goPID() {
   P = error;
   I = I + previous_I;
   D = error - previous_error;
@@ -372,12 +362,10 @@ void calculate_pid() {
 
   previous_I = I;
   previous_error = error;
-}
 
-void motor_control() {
   // Calculating the effective motor speed:
-  int left_motor_speed = initial_motor_speed - PID_value;
-  int right_motor_speed = initial_motor_speed + PID_value;
+  left_motor_speed = initial_motor_speed - PID_value;
+  right_motor_speed = initial_motor_speed + PID_value;
 
   // The motor speed should not exceed the max PWM value
   left_motor_speed = constrain(left_motor_speed, 0, 255);
@@ -389,9 +377,8 @@ void motor_control() {
     Serial.print("\t");
     Serial.println(right_motor_speed);*/
 
-  analogWrite(ENA, left_motor_speed); //Left Motor Speed
-  analogWrite(ENB, right_motor_speed); //Right Motor Speed
-
+  analogWrite(ENA, left_motor_speed);
+  analogWrite(ENB, right_motor_speed);
   forward();
 }
 void motor_forward_test() {

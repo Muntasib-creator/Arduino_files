@@ -5,14 +5,14 @@
 #define left_reverse 10
 #define ENB 11
 
-#define sensor1 A3      // Left most sensor
-#define sensor2 A2      // Left sensor
-#define sensor3 A1      // Middle Left sensor
-#define sensor4 A0      // Middle Right sensor
-#define sensor5 2       // Right sensor
-#define sensor6 3       // Right most sensor
-#define sensor7 4
-#define sensor8 5
+#define sensor1 A0      // Left most sensor
+#define sensor2 A1      // Left sensor
+#define sensor3 A2      // Middle Left sensor
+#define sensor4 A3      // Middle Right sensor
+#define sensor5 5       // Right sensor
+#define sensor6 4       // Right most sensor
+#define sensor7 3
+#define sensor8 2
 
 void setup() {
 
@@ -41,10 +41,10 @@ void loop() {
 }
 
 void motor_forward_test() {
-  analogWrite(ENA, 80); //Left Motor Speed
-  analogWrite(ENB, 80); //Right Motor Speed
+  analogWrite(ENA, 60); //Left Motor Speed
+  analogWrite(ENB, 60); //Right Motor Speed
   // forward();
-  sharpRightTurn();
+  forward();
 }
 
 
