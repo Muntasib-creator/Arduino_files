@@ -433,15 +433,7 @@ void goPID() {
 }
 
 void calcSharpSpeed() {
-  analogWrite(ENA, spedr);
-  analogWrite(ENB, spedl);
-  return;
-  if (abs(error) > 5) {
-    analogWrite(ENA, spedr);
-    analogWrite(ENB, spedl);
-    return;
-  }
-  if (abs(error) <= 1) {
+  if (abs(error) > 5 || abs(error) <= 1) {
     analogWrite(ENA, spedr);
     analogWrite(ENB, spedl);
     return;
@@ -452,9 +444,6 @@ void calcSharpSpeed() {
 }
 
 void sharpCalibrate() {
-  stopBot();
-  delay(600);
-  return;
   read_sensor_values();
   while (abs(error) > 1 && abs(error) < 6) {
     int speed = constrain(abs(error) * 15, 30, 60);
@@ -464,8 +453,6 @@ void sharpCalibrate() {
     else sharpLeftTurn();
     read_sensor_values();
   }
-  // stopBot();
-  // delay(5000);
 }
 
 void motor_forward_test() {
