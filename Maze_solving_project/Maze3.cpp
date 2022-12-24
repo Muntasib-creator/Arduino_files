@@ -10,7 +10,7 @@ int main(){
     while (true) {
       int n = i;
       int flag=0;
-      for (i = 0; i < n; i++) {
+      for (i = 1; i < n-1; i++) {
         if (path[i] == 'B') {
           flag=1;
           if (path[i - 1] == 'L' && path[i + 1] == 'L') {         // LBL = S
@@ -60,6 +60,7 @@ int main(){
           }
         }
       }
+      i++;
       if(flag==0){
         break;
       }
