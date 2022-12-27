@@ -26,15 +26,15 @@ char path[40];int i = 0, j = 0;
 int left_motor_speed = 0;
 int right_motor_speed = 0;
 
-int spedr = 60;
-int spedl = 60;
-int spedf = 60;
+int spedr = 70;
+int spedl = 70;
+int spedf = 70;
 int speedL = 0;
 int speedR = 0;
 
 int DelayCheck = 16;
 
-int DelayForth = 180;
+int DelayForth = 140;
 int DelayWhiteForth = 100;
 int DelayEvery = 70;
 int DelayReverse = DelayForth * 2;
@@ -46,14 +46,14 @@ int GoodPosition = 2;
 int counter1, counter2;
 int t = 0;
 int Time = 0;
-int initial_motor_speed = 60;
+int initial_motor_speed = 70;
 
 // Output Pins for Led
 //int ledPin1 = A3;
 //int ledPin2 = A4;
 
 // PID Constants
-int Kp = 12;  // Will be tuned on track
+int Kp = 13;  // Will be tuned on track
 int Ki = 0;   //these contants will differ in eee and
 int Kd = 10;  //cse fest depending on track
 
@@ -167,7 +167,7 @@ void goSharpLeft() {
       read_sensor_values();
       if (escapeLine(LEFT, counter1)) break;
     }
-    // read_sensor_values();
+    read_sensor_values();
     while (GoodPosition < error) {
       calcSharpSpeed();
       sharpLeftTurn();
@@ -446,7 +446,7 @@ bool followWall() {
     read_sensor_values();
     if (error != WALL) {
       stopBot();
-      delay(3000);
+      delay(1000);
       return true;
     }
   }
@@ -454,15 +454,15 @@ bool followWall() {
 
 bool escapeLine(int direction, int counter) {
   counter2 = millis();
-  if (counter2 - counter < 150 && (direction == LEFT && (sensor[0] == 1 || sensor[1] == 1) || (direction == RIGHT && (sensor[6] == 1 || sensor[7] == 1)))) {
+  if (counter2 - counter > 150 && (direction == LEFT && (sensor[0] == 1 || sensor[1] == 1) || (direction == RIGHT && (sensor[6] == 1 || sensor[7] == 1)))) {
     analogWrite(ENA, spedr);
     analogWrite(ENB, spedl);
     if (direction == LEFT) sharpLeftTurn();
     else if (direction == RIGHT) sharpRightTurn();
-    delay(DelaySharp);
+    delay(150);
     return true;
   }
-  if (counter2 - counter1 >= 400) return true;
+  if (counter2 - counter >= 400) return true;
   return false;
 }
 
@@ -563,12 +563,8 @@ void read_sensor_values() {
 }
 
 bool read_black_values() {
-  if (digitalRead(sensor2) == 0) return false;
-  if (digitalRead(sensor3) == 0) return false;
-  if (digitalRead(sensor4) == 0) return false;
-  if (digitalRead(sensor5) == 0) return false;
-  if (digitalRead(sensor6) == 0) return false;
-  if (digitalRead(sensor7) == 0) return false;
+  int sensor_sum=sensor[1]+sensor[2]+sensor[3]+sensor[4]+sensor[5]+sensor[6];
+  if (sensor_sum < 5) return false;
   return true;
 }
 
