@@ -75,7 +75,6 @@ void setup() {
 
 // Initialize Functions
 void read_sensor_values();
-bool read_black_values();
 void forward();
 void reverse();
 void stopBot();
@@ -125,7 +124,7 @@ void goBlackTurn() {
 }
 
 bool IR_value_check(int a[], int b[]) {
-  for (int i = 0; i < size_of_array - 1; i++) {
+  for (int i = 0; i < size_of_array; i++) {
     if (a[i] != b[i]) return false;
   }
   return true;
@@ -177,12 +176,6 @@ void read_sensor_values() {
   Serial.print("\t");
   Serial.print(error);
   Serial.print("\n");
-}
-
-bool read_black_values() {
-  int sensor_sum=sensor[1]+sensor[2]+sensor[3]+sensor[4]+sensor[5]+sensor[6];
-  if (sensor_sum < 5) return false;
-  return true;
 }
 
 void goPID() {
