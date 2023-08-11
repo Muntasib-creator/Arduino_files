@@ -1,15 +1,17 @@
-#define ENA 6
-#define right_forward 7
-#define right_reverse 8
-#define left_forward 9
-#define left_reverse 10
-#define ENB 11
+/* IR sensor pins */
+#define sensor1 A0  
+#define sensor2 A1  
+#define sensor3 A2  
+#define sensor4 A3  
+#define sensor5 A4 
 
-#define sensor1 A0      // Left most sensor
-#define sensor2 A1      // Left sensor
-#define sensor3 A2      // Middle Left sensor
-#define sensor4 A3      // Middle Right sensor
-#define sensor5 A4
+// Motor Pins
+#define ENA 11  // Left motor control
+#define left_reverse 10   // IN1 = left_reverse
+#define left_forward 9    // IN2 = left_forward
+#define right_reverse 8   // IN3 = right_reverse
+#define right_forward 7   // IN4 = right_forward
+#define ENB 6  // Right motor control
 
 int speed;
 void setup() {
@@ -84,20 +86,19 @@ void reverse() {
   digitalWrite(left_forward, LOW);
   digitalWrite(left_reverse, HIGH);
 }
-void sharpLeftTurn() {
+void sharpRightTurn() {
   digitalWrite(right_forward, LOW);
   digitalWrite(right_reverse, HIGH);
   digitalWrite(left_forward, HIGH);
   digitalWrite(left_reverse, LOW);
 }
-void sharpRightTurn() {
+void sharpLeftTurn() {
   digitalWrite(right_forward, HIGH);
   digitalWrite(right_reverse, LOW);
   digitalWrite(left_forward, LOW);
   digitalWrite(left_reverse, HIGH);
 }
-void stop_bot() {
-  //All motors at ease
+void stopBot() {
   digitalWrite(right_forward, LOW);
   digitalWrite(right_reverse, LOW);
   digitalWrite(left_forward, LOW);
